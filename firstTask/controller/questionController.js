@@ -55,9 +55,30 @@ var createQuestion = async (req, res) => {
     }
 }
 
+var deleteQuestion=async (req,res)=>{
+    try {
+        const { id } = req.params;
+        if (!id) {
+            return res.status(401).json({ error: 'Please write a valid Question!' });
+        }
+        const findQuestion = await User.findOne({ where: { id: id } });
+
+        if (!findQuestion) {
+            return res.status(401).json({ error: 'Question not found!' });
+        }
+        
+        await findQuestion.destroy();
+        return res.json({ message: 'Question deleted successfully' });
+    }
+    catch (error) {
+        console.error('Error deleting question:', error);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+}
 
 module.exports = {
     getQuestion,
     createQuestion,
-    getSpecificQuestion
+    getSpecificQuestion,
+    deleteQuestion
 }

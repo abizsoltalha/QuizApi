@@ -28,8 +28,8 @@ var getQuiz = async (req, res) => {
         const { quizType, groupAssignment, quizPermission } = req.body;
         // Create a new user
         const getAllQuiz = await Quiz.findAll();
-        if(!getAllQuiz){
-            res.send({message:"Couldn't find the quizzes"})
+        if (!getAllQuiz) {
+            res.send({ message: "Couldn't find the quizzes" })
         }
         res.json({ message: 'Quiz Created successfully', data: getAllQuiz });
     } catch (error) {
@@ -40,7 +40,7 @@ var getQuiz = async (req, res) => {
 var getSpecificQuiz = async (req, res) => {
     try {
         const Quizid = req.params.Quizid;
-        const fetchedQuiz = await Quiz.findOne({where:{ id: Quizid }})
+        const fetchedQuiz = await Quiz.findOne({ where: { id: Quizid } })
         if (!fetchedQuiz) {
             res.status(402).send({ message: 'Quiz Id either invalid or Not found!' })
         }
@@ -53,8 +53,30 @@ var getSpecificQuiz = async (req, res) => {
     }
 }
 
+var deleteQuiz = async (req, res) => {
+    try {
+        const { id } = req.params;
+        if (!id) {
+            return res.status(401).json({ error: 'Please write a valid Quiz Id!' });
+        }
+        const findQuiz = await Quiz.findOne({ where: { email: email } });
+
+        if (!findQuiz) {
+            return res.status(401).json({ error: 'Quiz not found!' });
+        }
+
+        await findQuiz.destroy();
+        return res.json({ message: 'Quiz deleted successfully' });
+    }
+    catch (error) {
+        console.error('Error deleting quiz:', error);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
 module.exports = {
     createQuiz,
     getQuiz,
-    getSpecificQuiz
+    getSpecificQuiz,
+    deleteQuiz
 }

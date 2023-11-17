@@ -7,6 +7,9 @@ var addUser = async (req, res) => {
     try {
         const { username, email, password } = req.body;
 
+        if (!username || !email || !password) {
+            return res.status(401).json({ error: 'Please fill all the details!' });
+        }
         // Hash the password
         const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -51,7 +54,29 @@ var login = async (req, res) => {
     }
 };
 
+var deleteUser = async (req, res) => {
+    try {
+        const { email } = req.params;
+        if (!email) {
+            return res.status(401).json({ error: 'Please write a valid Email!' });
+        }
+        const findUser = await User.findOne({ where: { email: email } });
+
+        if (!findUser) {
+            return res.status(401).json({ error: 'User not found!' });
+        }
+        
+        await findUser.destroy();
+        return res.json({ message: 'User deleted successfully' });
+    }
+    catch (error) {
+        console.error('Error deleting user:', error);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
 module.exports = {
     addUser,
-    login
+    login,
+    deleteUser
 }
