@@ -53,13 +53,39 @@ var getSpecificQuiz = async (req, res) => {
     }
 }
 
+var updateQuiz = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { updatedQuizType } = req.body;
+        if (!id) {
+            return res.status(401).json({ error: 'Please write a valid Quiz Id!' });
+        }
+        const findQuiz = await Quiz.findOne({ where: { id: id } });
+
+        if (!findQuiz) {
+            return res.status(401).json({ error: 'Quiz not found!' });
+        }
+
+        await findQuiz.update({ quizType: updatedQuizType }, {
+            where: {
+                id: id
+            }
+        });
+        return res.json({ message: 'Quiz updated successfully' });
+    }
+    catch (error) {
+        console.error('Error updating quiz:', error);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
 var deleteQuiz = async (req, res) => {
     try {
         const { id } = req.params;
         if (!id) {
             return res.status(401).json({ error: 'Please write a valid Quiz Id!' });
         }
-        const findQuiz = await Quiz.findOne({ where: { email: email } });
+        const findQuiz = await Quiz.findOne({ where: { id: id } });
 
         if (!findQuiz) {
             return res.status(401).json({ error: 'Quiz not found!' });
@@ -78,5 +104,6 @@ module.exports = {
     createQuiz,
     getQuiz,
     getSpecificQuiz,
-    deleteQuiz
+    deleteQuiz,
+    updateQuiz
 }

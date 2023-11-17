@@ -54,6 +54,29 @@ var login = async (req, res) => {
     }
 };
 
+var updateUser = async (req, res) => {
+    try {
+        const { id } = req.params;
+        console.log(req.params);
+        const { updatedEmail } = req.body;
+        if (!id) {
+            return res.status(401).json({ error: 'Please write a valid Email!' });
+        }
+        const findUser = await User.findOne({ where: { name: username } });
+
+        if (!findUser) {
+            return res.status(401).json({ error: 'User not found!' });
+        }
+
+        await findUser.update({ email: updatedEmail }, { where: { name: username } });
+        return res.json({ message: 'User updating successfully' });
+    }
+    catch (error) {
+        console.error('Error updating user:', error);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
 var deleteUser = async (req, res) => {
     try {
         const { email } = req.params;
@@ -65,7 +88,7 @@ var deleteUser = async (req, res) => {
         if (!findUser) {
             return res.status(401).json({ error: 'User not found!' });
         }
-        
+
         await findUser.destroy();
         return res.json({ message: 'User deleted successfully' });
     }
@@ -78,5 +101,6 @@ var deleteUser = async (req, res) => {
 module.exports = {
     addUser,
     login,
-    deleteUser
+    deleteUser,
+    updateUser
 }

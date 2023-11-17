@@ -17,6 +17,8 @@ app.post('/signup', users.addUser);
 
 app.post('/login', auth, users.login);
 
+app.put('/user/:id', users.updateUser);
+
 app.delete('/user/:email', users.deleteUser);
 
 app.get('/create-quiz', auth, quiz.getQuiz)
@@ -24,6 +26,8 @@ app.get('/create-quiz', auth, quiz.getQuiz)
 app.post('/create-quiz', auth, quiz.createQuiz);
 
 app.get('/quiz/:Quizid', auth, quiz.getSpecificQuiz);
+
+app.put('/quiz/:Quizid', quiz.updateQuiz);
 
 app.delete('/quiz/:quizId', quiz.deleteQuiz);
 
@@ -33,6 +37,6 @@ app.get('/question/:Qestionid', auth, question.getSpecificQuestion);
 
 app.post('/question/create-question', auth, question.createQuestion);
 
-app.delete('/question/:questionId',question.deleteQuestion)
+app.delete('/question/:questionId', question.deleteQuestion)
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
